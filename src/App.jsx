@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { motion } from 'framer-motion';
+import React, { useState, useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 
 // Resume Data (Parsed from your provided resume)
 const resumeData = {
@@ -35,18 +35,17 @@ const resumeData = {
     {
       name: "Uber Data Analysis Using Python",
       description: "Analyzed Uber rides data from various cities to identify patterns and trends, utilizing Python libraries such as NumPy, Pandas, and Matplotlib. Responsibilities included collecting, cleaning, and preprocessing data, followed by conducting data analysis and creating visualizations. This project demonstrated proficiency in data analysis and visualization techniques.",
-      // Assuming no specific link provided in resume, add placeholder or leave empty
-      link: "#",
+      link: "#", // Keep this as # or replace with GitHub repo if applicable
     },
     {
       name: "Spotit - Spotify Music Player App Clone",
       description: "Created and implemented a fully functional clone website of the Spotify Music Player App utilizing HTML, CSS, and JavaScript. Developed a visually appealing and user-friendly platform that closely resembles the Spotify Music Player interface. Showcased proficiency in web development by successfully designing and developing a clone website that showcases the passion for creating interactive and engaging digital experiences.",
-      link: "#",
+      link: "#", // Keep this as # or replace with live demo link if you deploy it
     },
     {
       name: "Personal Portfolio Website",
       description: "Designed and developed this personal portfolio website using React, Vite, Tailwind CSS, and Framer Motion. This project showcases my ability to create visually appealing, responsive, and interactive web interfaces. It also highlights problem-solving skills through the integration and debugging process of modern front-end tools.",
-      link: "#",
+      link: "https://harsh-choudhary-portfolio.vercel.app/", // <--- REPLACE THIS LINE with your actual live Vercel URL
     },
   ],
   certificates: [
@@ -60,6 +59,65 @@ const resumeData = {
   // Or if hosted on GitHub: "https://github.com/your-username/your-repo/raw/main/path/to/Harsh_Choudhary_Resume.pdf"
   resumePath: "#", // Placeholder: You MUST update this with a public URL to your resume PDF.
 };
+
+// Scroll to Top Button Component
+const ScrollToTopButton = () => {
+  const [isVisible, setIsVisible] = useState(false);
+
+  // Show button when page is scrolled up to a certain amount
+  const toggleVisibility = () => {
+    if (window.scrollY > 300) {
+      setIsVisible(true);
+    } else {
+      setIsVisible(false);
+    }
+  };
+
+  // Set up scroll event listener
+  useEffect(() => {
+    window.addEventListener('scroll', toggleVisibility);
+    return () => {
+      window.removeEventListener('scroll', toggleVisibility);
+    };
+  }, []);
+
+  // Scroll to top
+  const scrollToTop = () => {
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth',
+    });
+  };
+
+  return (
+    <AnimatePresence>
+      {isVisible && (
+        <motion.button
+          onClick={scrollToTop}
+          className="fixed bottom-6 right-6 p-3 bg-purple-600 text-white rounded-full shadow-lg cursor-pointer hover:bg-purple-700 transition-colors duration-300 z-50"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: 20 }}
+          transition={{ duration: 0.3 }}
+          aria-label="Scroll to top"
+        >
+          {/* SVG for arrow up icon */}
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            className="h-6 w-6"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+            strokeWidth={2}
+          >
+            <path strokeLinecap="round" strokeLinejoin="round" d="M5 10l7-7m0 0l7 7m-7-7v18" />
+          </svg>
+        </motion.button>
+      )}
+    </AnimatePresence>
+  );
+};
+
 
 // --- Main App Component ---
 export default function App() {
@@ -95,7 +153,7 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-900 to-black text-white font-inter">
+    <div className="min-h-screen bg-gradient-to-br from-gray-900 to-black text-white font-inter animate-gradient-xy"> {/* Added animate-gradient-xy class */}
       {/* Navbar */}
       <motion.nav
         className="fixed w-full z-50 bg-gray-900 bg-opacity-80 backdrop-blur-sm p-4 shadow-lg rounded-b-xl"
@@ -344,7 +402,7 @@ export default function App() {
                     href={project.link}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="mt-4 inline-block bg-purple-600 text-white px-5 py-2 rounded-full text-sm font-semibold hover:bg-purple-700 transition-colors duration-300 text-center"
+                    className="mt-4 inline-block bg-purple-600 text-white px-5 py-2 rounded-full text-sm font-semibold hover:bg-purple-700 transition-colors duration-300 transform hover:scale-105"
                   >
                     View Project
                   </a>
@@ -443,19 +501,21 @@ export default function App() {
                 {/* GitHub Icon (Placeholder - use actual SVG or Font Awesome if available) */}
                 <svg className="w-10 h-10" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                   <path fillRule="evenodd" d="M12 0C5.373 0 0 5.373 0 12c0 5.302 3.438 9.799 8.207 11.387.6.11.82-.26.82-.577v-2.234c-3.338.725-4.042-1.61-4.042-1.61-.546-1.387-1.333-1.757-1.333-1.757-1.09-.745.082-.729.082-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.49.998.108-.775.418-1.305.762-1.605-2.665-.3-5.464-1.332-5.464-5.93 0-1.31.465-2.38 1.235-3.22-.12-.3-.535-1.52.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.4 3.003-.404 1.02.004 2.046.138 3.003.404 2.29-1.552 3.297-1.23 3.297-1.23.653 1.656.238 2.876.118 3.176.77.84 1.235 1.91 1.235 3.22 0 4.61-2.8 5.62-5.475 5.92.42.36.81 1.096.81 2.22v3.293c0 .319.217.69.825.577C20.565 21.797 24 17.302 24 12c0-6.627-5.373-12-12-12z" clipRule="evenodd" />
-                </svg>
-              </motion.a>
-            </div>
-          </motion.div>
-        </div>
-      </section>
+                  </svg>
+                </motion.a>
+              </div>
+            </motion.div>
+          </div>
+        </section>
 
-      {/* Footer */}
-      <footer className="bg-gray-900 py-6 text-center text-gray-400 text-sm border-t border-gray-700">
-        <div className="container mx-auto">
-          &copy; {new Date().getFullYear()} {resumeData.name}. All rights reserved.
-        </div>
-      </footer>
-    </div>
-  );
-}
+        {/* Footer */}
+        <footer className="bg-gray-900 py-6 text-center text-gray-400 text-sm border-t border-gray-700">
+          <div className="container mx-auto">
+            &copy; {new Date().getFullYear()} {resumeData.name}. All rights reserved.
+          </div>
+        </footer>
+        <ScrollToTopButton /> {/* Add the ScrollToTopButton component */}
+      </div>
+    );
+    }
+    
